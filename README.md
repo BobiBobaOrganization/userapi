@@ -1,20 +1,6 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+# userapi
+THIS PROJECT IS A MIRROR FROM A STUDENT AZURE DEV-OPS ORGANIZATION AND MAY NOT WORK PROPERLY WITH GITHUB ACTIONS
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+The following project is a system made as a project at V.N. Karazin Kharkiv National University for the "Methods of contanerization" subject. It encompasses 4 different APIs that form the following system:
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
-
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
-
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+<img width="1239" height="642" alt="Untitled Diagram drawio" src="https://github.com/user-attachments/assets/a6f58b18-88c2-4866-974b-9c6af4aefb31" />
