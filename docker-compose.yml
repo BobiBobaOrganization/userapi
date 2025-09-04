@@ -1,0 +1,83 @@
+services:
+  postgres:
+    environment:
+      POSTGRES_PASSWORD: "!BobiBobaLivesForever1984"
+    container_name: service-postgres
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-storage:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U postgres -d tasktracker'"]
+      timeout: 10s
+      retries: 10
+  
+  migrations:
+    container_name: service-migrations
+    pull_policy: if_not_present
+    image: bobsytoch/migrationsapi:latest
+    environment:
+      - DATABASE_URL=postgresql://postgres:!BobiBobaLivesForever1984@service-postgres:5432/postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  userapi:
+    container_name: service-userapi
+    pull_policy: if_not_present
+    image: maksymmaliutin/userapi:latest
+    environment:
+      - DATABASE_URL=postgresql://postgres:!BobiBobaLivesForever1984@service-postgres:5432/postgres
+    ports:
+      - "7000:7000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+
+  accountapi:
+    container_name: service-accountapi
+    pull_policy: if_not_present
+    image: hut0r9n/accountapi:latest
+    environment:
+      - DATABASE_URL=postgresql://postgres:!BobiBobaLivesForever1984@service-postgres:5432/postgres
+    ports:
+      - "7001:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+
+  taskapi:
+    container_name: service-taskapi
+    pull_policy: if_not_present 
+    image: akovalov1/taskapi:latest
+    environment:
+      - DATABASE_URL=postgresql://postgres:!BobiBobaLivesForever1984@service-postgres:5432/postgres
+    ports:
+      - "7002:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+
+  reportapi:
+    container_name: service-reportapi
+    pull_policy: if_not_present 
+    image: bobsytoch/reportapi:latest
+    environment:
+      - DATABASE_URL=postgresql://postgres:!BobiBobaLivesForever1984@service-postgres:5432/postgres
+    ports:
+      - "7003:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+
+volumes:
+  postgres-storage:

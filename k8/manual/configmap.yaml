@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-config
+  namespace: tasktracker
+data:
+  TEST_MODE: "false"

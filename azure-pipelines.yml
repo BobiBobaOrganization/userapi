@@ -1,0 +1,62 @@
+trigger:
+  branches:
+    include:
+      - main
+      - feature/*
+
+variables:
+  - group: 'USERAPI'
+  - name: DockerId
+    value: "$(DOCKER_ID)"
+  - name: DockerToken
+    value: "$(DOCKER_TOKEN)"
+  - name: DockerRepo
+    value: "$(DOCKER_REPO)"
+  - name: ServiceName
+    value: "$(SERVICE_NAME)"
+  - name: AzureRegistry
+    value: "$(AZURE_REGISTRY)"
+
+resources:
+  repositories:
+    - repository: ci-templates
+      type: git
+      name: ci-templates
+      ref: refs/heads/main
+
+stages:
+- template: /templates/stages/prebuild/v1.yaml@ci-templates
+  parameters:
+    manualAppVersion: "$(MANUALLY_SETUP_APP_VERSION)"
+    dockerRepo: "$(DockerRepo)"
+    serviceName: "$(ServiceName)"
+    dockerToken: "$(DockerToken)"
+
+- template: /templates/stages/build-n-test/python/v1.yaml@ci-templates
+  parameters:
+    appVersion: $[stageDependencies.Pre_Build.Pre_Build_Analysis.outputs['stepb.APPVERSION']]
+
+- template: /templates/stages/build-n-push/docker/v1.yaml@ci-templates
+  parameters:
+    appVersion: $[stageDependencies.Pre_Build.Pre_Build_Analysis.outputs['stepb.APPVERSION']]
+    dockerRepo: "$(DockerRepo)"
+    serviceName: "$(ServiceName)"
+    dockerToken: "$(DockerToken)"
+    azureRegistry: "$(AzureRegistry)"
+
+- template: /templates/stages/build-n-push/helm/v1.yaml@ci-templates
+  parameters:
+    appVersion: $[stageDependencies.Pre_Build.Pre_Build_Analysis.outputs['stepb.APPVERSION']]
+    dockerRepo: "$(DockerRepo)"
+    serviceName: "$(ServiceName)"
+    dockerToken: "$(DockerToken)"
+    azureRegistry: "$(AzureRegistry)"
+
+- stage: Post_Build
+  dependsOn: Helm_Chart_Pack_and_Push
+  condition: succeeded()
+  jobs:
+  - job: Post_Build
+    steps:
+    - script: echo "Hello, from Post-Build Job"
+      displayName: "Post-Build"
